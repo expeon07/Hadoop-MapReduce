@@ -8,12 +8,12 @@ from mrjob.job import MRJob
 class Followers(MRJob):
 
     # Arg 1: self: the class itself (this)
-    # Arg 2: Input key to the map function (here:none)
-    # Arg 3: Input value to the map function (here:one line from the input file)
+    # Arg 2: Input key to the map function
+    # Arg 3: Input value to the map function (one line from the input file)
     def mapper(self, _, line):
         # yield (follower, followee) pair
-        for follower, followee in line.split():
-            yield(followee, follower)
+        (follower, followee) = line.split()
+        yield(followee, follower)
 
 
     # Arg 1: self: the class itself (this)

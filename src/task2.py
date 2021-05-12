@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
 from mrjob.job import MRJob
 
 
@@ -12,8 +14,8 @@ class Followers(MRJob):
     # Arg 3: Input value to the map function (here:one line from the input file)
     def mapper(self, _, line):
         # yield (follower, followee) pair
-        for follower, followee in line.split():
-            yield(follower, followee)
+        (follower, followee) = line.split()
+        yield(follower, followee)
 
 
     # Arg 1: self: the class itself (this)
