@@ -3,17 +3,19 @@
 from mrjob.job import MRJob
 
 
-# Implement a MapReduce job that creates a list of followers for each user 
-# in the dataset.
+# Implement a MapReduce job that creates a list of followers for each user in the dataset.
 class Followers(MRJob):
 
     # Arg 1: self: the class itself (this)
     # Arg 2: Input key to the map function
     # Arg 3: Input value to the map function (one line from the input file)
     def mapper(self, _, line):
+
+        # TODO ordering of keys
+
         # yield (follower, followee) pair
         (follower, followee) = line.split()
-        yield(followee, follower)
+        yield(int(followee), follower)
 
 
     # Arg 1: self: the class itself (this)
@@ -22,7 +24,7 @@ class Followers(MRJob):
     # sorted list of ALL values associated with the same key)
     def reducer(self, followee, followers):
         followers_list = [follower for follower in followers]
-        yield(followee, followers_list)
+        yield(followee, sorted(followers_list))
 
 
 if __name__ == '__main__':
