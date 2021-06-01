@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from mrjob.job import MRJob
 import heapq
 
