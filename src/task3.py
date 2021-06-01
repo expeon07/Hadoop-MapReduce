@@ -15,7 +15,7 @@ class MostFollowed(MRJob):
     def mapper(self, _, line):
         # yield (followee, 1) pair
         (follower, followee) = line.split()
-        yield(int(followee), 1)
+        yield(followee, 1)
 
 
     def combiner(self, followee, follower_count):

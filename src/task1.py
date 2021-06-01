@@ -10,12 +10,9 @@ class Followers(MRJob):
     # Arg 2: Input key to the map function
     # Arg 3: Input value to the map function (one line from the input file)
     def mapper(self, _, line):
-
-        # TODO ordering of keys
-
         # yield (follower, followee) pair
         (follower, followee) = line.split()
-        yield(int(followee), int(follower))
+        yield(followee, follower)
 
 
     # Arg 1: self: the class itself (this)
