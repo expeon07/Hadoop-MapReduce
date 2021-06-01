@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-
 from mrjob.job import MRJob
 import heapq
 
@@ -17,13 +15,13 @@ class MostFollowed(MRJob):
     def mapper(self, _, line):
         # yield (followee, 1) pair
         (follower, followee) = line.split()
-        yield(followee, 1)
+        yield(int(followee), 1)
 
 
     def combiner(self, followee, follower_count):
-
         # yield sum of followers
         yield(followee, sum(follower_count))
+
 
     def reducer_init(self):
         self.heap = []
@@ -37,6 +35,7 @@ class MostFollowed(MRJob):
         
         if len(self.heap) > TOP_FOLLOWERS:
             heapq.heappop(self.heap)
+
 
     def reducer_final(self):
         for (follower_count, followee) in self.heap:
@@ -55,6 +54,7 @@ class MostFollowed(MRJob):
     def globalTop_reducer(self ,_, follower_count):
         for follower_count in heapq.nlargest(TOP_FOLLOWERS, follower_count):
             yield follower_count[1], follower_count[0]
+
 
     # TODO count may be wrong
     def steps(self):

@@ -15,7 +15,7 @@ class Followers(MRJob):
 
         # yield (follower, followee) pair
         (follower, followee) = line.split()
-        yield(int(followee), follower)
+        yield(int(followee), int(follower))
 
 
     # Arg 1: self: the class itself (this)
