@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from mrjob.job import MRJob
-import heapq
-
 from mrjob.step import MRStep
+
+import heapq
 
 TOP_FOLLOWERS = 100
 
@@ -20,12 +20,13 @@ class MostFollowed(MRJob):
 
 
     def combiner(self, followee, follower_count):
-        # yield sum of followers
+        # yield (followee, sum of followers)
         yield(followee, sum(follower_count))
 
 
     def reducer_init(self):
         self.heap = []
+
 
     # Arg 1: self: the class itself (this)
     # Arg 2: Input key to the reduce function (here: the key that was emitted by the mapper)
@@ -43,21 +44,19 @@ class MostFollowed(MRJob):
             yield (followee, follower_count)
 
 
-    # Step 2 — The global TOP_FOLLOWERS needs to run.
-    # The mapper outputs "TOP_FOLLOWERS" as the key and (count,word) as the value.
-    # We put the count first so that it can be used directly as input to heapq.nlargest()
-    def globalTop_mapper(self, followee, follower_count):
-        yield "Top " + str(TOP_FOLLOWERS), (follower_count, followee)
+    # Step 2: Run the TOP_FOLLOWERS
+    # The mapper outputs "TOP_FOLLOWERS" as the key and (follower_count, followee) as value
+    # Put the count as key so it can be used directly as input to heapq.nlargest()
+    def top_mapper(self, followee, follower_count):
+       yield (str(TOP_FOLLOWERS), (follower_count, followee))
 
 
-    # The reducer ignores the key ("TOP_FOLLOWERS"), 
-    # and just finds the largest of the values.
-    def globalTop_reducer(self ,_, follower_count):
-        for follower_count in heapq.nlargest(TOP_FOLLOWERS, follower_count):
-            yield follower_count[1], follower_count[0]
+    # The finds the largest of the values.
+    def top_reducer(self ,_, follower_counts):
+        for follower_count in heapq.nlargest(TOP_FOLLOWERS, follower_counts):
+            yield (follower_count[1], follower_count[0])
 
 
-    # TODO count may be wrong
     def steps(self):
         return [
             MRStep(mapper=self.mapper,
@@ -67,8 +66,8 @@ class MostFollowed(MRJob):
                    reducer_final=self.reducer_final
                    ),
 
-            MRStep(mapper=self.globalTop_mapper,
-                   reducer=self.globalTop_reducer) 
+            MRStep(mapper=self.top_mapper,
+                   reducer=self.top_reducer) 
         ]
 
 

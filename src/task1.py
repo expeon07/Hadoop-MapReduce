@@ -21,7 +21,7 @@ class Followers(MRJob):
     # sorted list of ALL values associated with the same key)
     def reducer(self, followee, followers):
         followers_list = [follower for follower in followers]
-        yield(followee, sorted(followers_list))
+        yield(followee, followers_list)
 
 
 if __name__ == '__main__':
