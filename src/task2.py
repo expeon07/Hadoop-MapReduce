@@ -11,9 +11,6 @@ class Followees(MRJob):
     # Arg 2: Input key to the map function (here:none)
     # Arg 3: Input value to the map function (here:one line from the input file)
     def mapper(self, _, line):
-
-        # TODO trailing zeros?
-
         # yield (follower, followee) pair
         (follower, followee) = line.split()
         yield(follower, followee)
